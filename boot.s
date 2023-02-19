@@ -8,7 +8,7 @@
 	.long CHECKSUM
 
 .section .text
-.extern kernelMain
+.extern kernel_main
 .global loader
 
 loader:
