@@ -1,5 +1,5 @@
-GCC_FLAGS = -m32 -ffreestanding -std=gnu99 -O2 -I.
-LD_FLAGS = -ffreestanding -O2 -nostdlib
+GCC_FLAGS = -m32 -ffreestanding -std=gnu99 -I.
+LD_FLAGS = -ffreestanding -nostdlib -no-pie
 make:
 	clear
 	rm -f *.o
@@ -19,9 +19,9 @@ make:
 		boot.o \
 		gdt.o \
 		port.o \
-		int_stub.o \
-		int.o \
 		vga.o \
+		int.o \
+		int_stub.o \
 		kernel.o \
 
 	mkdir -p iso/boot/grub

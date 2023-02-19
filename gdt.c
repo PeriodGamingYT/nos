@@ -64,7 +64,14 @@ struct gdt gdt_make() {
 	unsigned int i[2];
 	i[1] = (unsigned int) &result;
 	i[0] = sizeof(struct gdt) << 16;
-	__asm__ volatile("cli");
-	__asm__ volatile("lgdt %0" : : "m" (i));
+	__asm__ volatile("lidtl (%0)" : : "r" (&i));
 	return result;
+}
+
+unsigned short gdt_data(struct gdt *arg_gdt) {
+	return (unsigned char *) &arg_gdt->data - (unsigned char *) arg_gdt;
+}
+
+unsigned short gdt_code(struct gdt *arg_gdt) {
+	return (unsigned char *) &arg_gdt->code - (unsigned char *) arg_gdt;
 }

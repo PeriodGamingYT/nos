@@ -30,5 +30,7 @@ unsigned int segment_descriptor_limit(
 	struct segment_descriptor
 );
 
+unsigned short gdt_data(struct gdt *);
+unsigned short gdt_code(struct gdt *);
 struct gdt gdt_make();
 #endif

@@ -1,6 +1,6 @@
 .set IRQ_BASE, 0x20
 .section .text
-.extern handle_int
+.extern int_handle
 
 .macro HandleException num
 global int_handle_exception\num\()Ev
@@ -27,8 +27,8 @@ int_bottom:
 	pushl %fs
 	pushl %gs
 	pushl %esp
-	push (int_num)
-	call handle_int
+	push (int_handle)
+	call int_handle
 	# addl $5, %esp
 	movl %eax, %esp
 	popl %gs

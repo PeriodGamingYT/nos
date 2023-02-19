@@ -53,4 +53,6 @@ unsigned int do_int_handle(
 	unsigned char, 
 	unsigned int
 );
+
+struct int_manager int_manager_make(struct gdt *);
 #endif
