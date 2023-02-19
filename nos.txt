@@ -1,0 +1,38 @@
+Package managment is handled at the kernel level.
+The shell is a dynamic language enviorment (Proper one, no terminal/shell buisness).
+Everything will use a universal text format (Something like HTML).
+Each command will have a changing interactive foramtted text output.
+Shell looks like:
+
+1: Text editor # | 2: Listed Files 
+file("/").list()
+
+The shell has tabs, (mostly) each one being a output, and the first being a text editor (Ctrl-Enter to run text).
+Ctrl+W - Close Tab (Closing text editor shuts down computer).
+Ctrl+Tab - Switch tab.
+Ctrl+Shift+Tab - Switch tab (Backwards).
+Text editor shortcuts are standard text editor shortcuts.
+Every file, package, output, and process has a UUID, that has meta-data attributes.
+There should be a package repo where every package has an ID.
+Half of all package ID's are private (unique on every system, can't be published) for development purposes.
+How is configuration going to work? TODO
+The only permissions are admin and non-admin permissions.
+Programs are given admin and non-admin permissions
+	If a program is non-admin it can:
+		Access user directories.
+		Access it's own package directory (Maybe config can be in there?).
+
+Every program is a package.
+Filesystem looks like
+	usr
+		a
+			(user stuff)
+
+		b
+			(user stuff)
+
+	pkg
+		sum
+			manifest (Configs can maybe go in here?)
+			out/
+				(stuff the whole system can use)
