@@ -26,6 +26,7 @@ void set_int_descriptor_table_entry(
 	manager->int_table[int_num].reserved = 0;
 }
 
+#include <vga.h>
 void int_activate(
 	struct int_manager *manager,
 	struct gdt *arg_gdt
@@ -35,7 +36,7 @@ void int_activate(
 	}
 
 	manager->active_int = manager;
-	__asm__("sti");
+	__asm__ volatile("sti");
 }
 
 void int_deactivate(
@@ -43,7 +44,7 @@ void int_deactivate(
 ) {
 	if(manager->active_int == manager) {
 		manager->active_int = 0;
-		__asm__("cli");
+		__asm__ volatile("cli");
 	}
 }
 
@@ -52,6 +53,7 @@ unsigned int int_handle(
 	unsigned char int_num,
 	unsigned int esp
 ) {
+	println("int!");
 	if(manager->active_int != 0) {
 		return do_int_handle(manager->active_int, int_num, esp);
 	}
@@ -59,7 +61,6 @@ unsigned int int_handle(
 	return esp;
 }
 
-#include <vga.h>
 unsigned int do_int_handle(
 	struct int_manager *manager,
 	unsigned char int_num,
@@ -120,8 +121,8 @@ struct int_manager int_manager_make(struct gdt *arg_gdt) {
 	);
 
 	port_8_slow_write(result.pic_master_command, 0x11);
-	port_8_slow_write(result.pic_master_data, 0x20);
 	port_8_slow_write(result.pic_slave_command, 0x11);
+	port_8_slow_write(result.pic_master_data, 0x20);
 	port_8_slow_write(result.pic_slave_data, 0x28);
 	port_8_slow_write(result.pic_master_data, 0x04);
 	port_8_slow_write(result.pic_slave_data, 0x02);

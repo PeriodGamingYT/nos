@@ -6,6 +6,7 @@ make:
 	rm -f *.a
 	rm -f *.iso
 	rm -f *.bin
+	rm -f *.out
 	rm -rf bin iso
 	as --32 boot.s -o boot.o
 	as --32 int_stub.s -o int_stub.o
@@ -29,3 +30,12 @@ make:
 	cp grub.cfg iso/boot/grub/grub.cfg
 	grub-mkrescue -o nos.iso iso
 	qemu-system-i386 -cdrom nos.iso
+
+clean:
+	clear
+	rm -f *.o
+	rm -f *.a
+	rm -f *.iso
+	rm -f *.bin
+	rm -f *.out
+	rm -rf bin iso
