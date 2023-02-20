@@ -12,9 +12,11 @@ make:
 	gcc $(GCC_FLAGS) -c kernel.c -o kernel.o
 	gcc $(GCC_FLAGS) -c vga.c -o vga.o
 	gcc $(GCC_FLAGS) -c gdt.c -o gdt.o
+	gcc $(GCC_FLAGS) -c idt.c -o idt.o
 	gcc -T link.ld -o nos.bin $(LD_FLAGS) \
 		boot.o \
 		gdt.o \
+		idt.o \
 		vga.o \
 		kernel.o \
 
