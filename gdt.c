@@ -1,77 +1,28 @@
 #include <gdt.h>
 
-struct segment_descriptor segment_descriptor_make(
-	unsigned int base,
-	unsigned int limit,
-	unsigned char flags
+struct gdt_entry gdt[3];
+struct gdt_ptr gp;
+void gdt_set_gate(
+	int num,
+	unsigned long base,
+	unsigned long limit,
+	unsigned char access,
+	unsigned char gran
 ) {
-	struct segment_descriptor result;
-	unsigned char *target = (unsigned char *) &result;
-	target[6] = 0x40;
-	if(limit > 65536) {
-		target[6] = 0xc0;
-		int old_limit = limit;
-		limit >>= 12;
-		if((limit & 0xfff) != 0xfff) {
-			limit = (old_limit >> 12) - 1;
-		}
-	}
-
-	target[0] = limit & 0xff;
-	target[1] = (limit >> 8) & 0xff;
-	target[2] = base & 0xff;
-	target[3] = (base >> 8) & 0xff;
-	target[4] = (base >> 16) & 0xff;
-	target[5] = flags;
-	target[6] |= (limit >> 16) & 0xf;
-	target[7] = (base >> 24) & 0xff;
-	return result;
+	gdt[num].base_low = (base & 0xffff);
+	gdt[num].base_middle = (base >> 16) & 0xff;
+	gdt[num].base_high = (base >> 24) & 0xff;
+	gdt[num].limit_low = (limit & 0xffff);
+	gdt[num].gran = ((limit >> 16) & 0x0f);
+	gdt[num].gran |= (gran & 0xf0);
+	gdt[num].access = access;
 }
 
-unsigned int segment_descriptor_base(
-	struct segment_descriptor descriptor
-) {
-	unsigned char *target = (unsigned char *) &descriptor;
-	unsigned int result = target[7];
-	result = (result << 8) + target[4];
-	result = (result << 8) + target[3];
-	result = (result << 8) + target[2];
-	return result;
-}
-
-unsigned int segment_descriptor_limit(
-	struct segment_descriptor descriptor
-) {
-	unsigned char *target = (unsigned char *) &descriptor;
-	unsigned int result = target[6] & 0xf;
-	result = (result << 8) + target[1];
-	result = (result << 8) + target[0];
-	if((target[6] & 0xc0) == 0xc0) {
-		result = (result << 12) | 0xfff;
-	}
-	
-	return result;
-}
-
-struct gdt gdt_make() {
-	struct gdt result = {
-		.null = segment_descriptor_make(0, 0, 0),
-		.unused = segment_descriptor_make(0, 0, 0),
-		.code = segment_descriptor_make(0, 64 * 1024 * 1024, 0x9a),
-		.data = segment_descriptor_make(0, 64 * 1024 * 1024, 0x92)
-	};
-
-	unsigned int i[2];
-	i[1] = (unsigned int) &result;
-	i[0] = sizeof(struct gdt) << 16;
-	__asm__ volatile("lidtl (%0)" : : "r" (&i));
-	return result;
-}
-
-unsigned short gdt_data(struct gdt *arg_gdt) {
-	return (unsigned char *) &arg_gdt->data - (unsigned char *) arg_gdt;
-}
-
-unsigned short gdt_code(struct gdt *arg_gdt) {
-	return (unsigned char *) &arg_gdt->code - (unsigned char *) arg_gdt;
+void gdt_install() {
+	gp.limit = (sizeof(struct gdt_entry) * 3) - 1;
+	gp.base = &gdt;
+	gdt_set_gate(0, 0, 0, 0, 0);
+	gdt_set_gate(1, 0, 0xffffffff, 0x9a, 0xcf);
+	gdt_set_gate(2, 0, 0xffffffff, 0x92, 0xcf);
+	gdt_flush();
 }

@@ -1,36 +1,20 @@
 #ifndef __GDT_H
 #define __GDT_H
-struct segment_descriptor {
-	unsigned short limit_low;
-	unsigned short base_low;
-	unsigned char base_high;
-	unsigned char type;
-	unsigned char flags_limit_high;
-	unsigned char base_vhigh;
+struct gdt_entry {
+    unsigned short limit_low;
+    unsigned short base_low;
+    unsigned char base_middle;
+    unsigned char access;
+    unsigned char gran;
+    unsigned char base_high;
 } __attribute__((packed));
 
-struct gdt {
-	struct segment_descriptor null;
-	struct segment_descriptor unused;
-	struct segment_descriptor code;
-	struct segment_descriptor data;
-};
+struct gdt_ptr {
+    unsigned short limit;
+    unsigned int base;
+} __attribute__((packed));
 
-struct segment_descriptor segment_descriptor_make(
-	unsigned int,
-	unsigned int,
-	unsigned char
-);
-
-unsigned int segment_descriptor_base(
-	struct segment_descriptor
-);
-
-unsigned int segment_descriptor_limit(
-	struct segment_descriptor
-);
-
-unsigned short gdt_data(struct gdt *);
-unsigned short gdt_code(struct gdt *);
-struct gdt gdt_make();
+void gdt_set_gate(int, unsigned long, unsigned long, unsigned char, unsigned char);
+void gdt_install();
+extern void gdt_flush();
 #endif
