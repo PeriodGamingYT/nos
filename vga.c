@@ -12,6 +12,18 @@ static void move_cursor() {
 	out_8(0x3d5, location);
 }
 
+void print_clear() {
+	unsigned char attribute_8 = (0 << 4) | (15 & 0x0f);
+	unsigned short blank = 0x20 | (attribute_8 << 8);
+	for(int i = 0; i < 80 * 25; i++) {
+		video_memory[i] = blank;
+	}
+
+	cursor_x = 0;
+	cursor_y = 0;
+	move_cursor();
+}
+
 void print_char(char arg_char) {
 	unsigned char background = 0;
 	unsigned char foreground = 15;
@@ -49,23 +61,13 @@ void print_char(char arg_char) {
 	if(cursor_x >= 80) {
 		cursor_x = 0;
 		cursor_y++;
-		if(cursor_y >= 25) {
-			cursor_y = 0;
-		}
 	}
 
-	move_cursor();
-}
-
-void print_clear() {
-	unsigned char attribute_8 = (0 << 4) | (15 & 0x0f);
-	unsigned short blank = 0x20 | (attribute_8 << 8);
-	for(int i = 0; i < 80 * 25; i++) {
-		video_memory[i] = blank;
+	if(cursor_y >= 25) {
+		cursor_y = 0;
+		print_clear();
 	}
 
-	cursor_x = 0;
-	cursor_y = 0;
 	move_cursor();
 }
 
