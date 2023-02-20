@@ -1,4 +1,13 @@
-SOURCES=boot.o main.o
+SOURCES= \
+	boot.o \
+	common.o \
+	vga.o \
+	tables_stub.o \
+	int_stub.o \
+	isr.o \
+	tables.o \
+	main.o
+
 CFLAGS=-nostdlib -nostdinc -fno-builtin -fno-stack-protector -m32
 LDFLAGS=-Tlink.ld -m elf_i386
 ASFLAGS=-felf
