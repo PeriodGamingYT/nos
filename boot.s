@@ -1,49 +1,28 @@
-.set MAGIC, 0x1badb002
-.set FLAGS, (1 << 0 | 1 << 1)
-.set CHECKSUM, -(MAGIC + FLAGS)
+MULTIBOOT_PAGE_ALIGN equ 1 << 0
+MULTIBOOT_MEM_INFO equ 1 << 1
+MULTIBOOT_HEADER_MAGIC equ 0x1badb002
+MULTIBOOT_HEADER_FLAGS equ MULTIBOOT_PAGE_ALIGN | MULTIBOOT_MEM_INFO
+MULTIBOOT_CHECKSUM equ -(MULTIBOOT_HEADER_MAGIC + MULTIBOOT_HEADER_FLAGS)
 
-.section .multiboot
-	.long MAGIC
-	.long FLAGS
-	.long CHECKSUM
+[BITS 32]
+[GLOBAL multiboot]
+[EXTERN code]
+[EXTERN bss]
+[EXTERN end]
+multiboot:
+	dd MULTIBOOT_HEADER_MAGIC
+	dd MULTIBOOT_HEADER_FLAGS
+	dd MULTIBOOT_CHECKSUM
+	dd multiboot
+	dd code
+	dd bss
+	dd end
+	dd start
 
-.section .text
-.global gdt_flush
-.extern gp
-gdt_flush:
-    lgdt gp
-    mov %ax, 0x10
-    mov %dx, %ax
-    mov %es, %ax
-    mov %fs, %ax
-    mov %gs, %ax
-    mov %ss, %ax
-	jmp $0x08, $flush2
-
-flush2:
-	ret
-
-.global idt_load
-.extern idtp
-idt_load:
-	lidt idtp
-	ret
-  
-.extern kernel_main
-.global loader
-
-loader:
-	mov $kernel_stack, %esp
-	push %eax
-	push %ebx
-	call kernel_main
-
-_stop:
+[GLOBAL start]
+[EXTERN main]
+start:
+	push ebx
 	cli
-	hlt
-	jmp _stop
-
-.section .bss
-.space 2*1024*1024 ; # 2 MiB.
-
-kernel_stack:
+	call main
+	jmp $

@@ -1,36 +1,15 @@
-GCC_FLAGS = -m32 -ffreestanding -std=gnu99 -I.
-LD_FLAGS = -ffreestanding -nostdlib -no-pie
-make:
-	clear
-	rm -f *.o
-	rm -f *.a
-	rm -f *.iso
-	rm -f *.bin
-	rm -f *.out
-	rm -rf bin iso
-	as --32 boot.s -o boot.o
-	gcc $(GCC_FLAGS) -c kernel.c -o kernel.o
-	gcc $(GCC_FLAGS) -c vga.c -o vga.o
-	gcc $(GCC_FLAGS) -c gdt.c -o gdt.o
-	gcc $(GCC_FLAGS) -c idt.c -o idt.o
-	gcc -T link.ld -o nos.bin $(LD_FLAGS) \
-		boot.o \
-		gdt.o \
-		idt.o \
-		vga.o \
-		kernel.o \
-
-	mkdir -p iso/boot/grub
-	cp nos.bin iso/boot/nos.bin
-	cp grub.cfg iso/boot/grub/grub.cfg
-	grub-mkrescue -o nos.iso iso
-	qemu-system-i386 -cdrom nos.iso -no-reboot -d int,cpu_reset
-
+SOURCES=boot.o main.o
+CFLAGS=-nostdlib -nostdinc -fno-builtin -fno-stack-protector -m32
+LDFLAGS=-Tlink.ld -m elf_i386
+ASFLAGS=-felf
+all: $(SOURCES) link
 clean:
+	-rm *.o kernel.bin
+
+link:
 	clear
-	rm -f *.o
-	rm -f *.a
-	rm -f *.iso
-	rm -f *.bin
-	rm -f *.out
-	rm -rf bin iso
+	ld $(LDFLAGS) -o kernel.bin $(SOURCES)
+	qemu-system-i386 -kernel kernel.bin
+
+.s.o:
+	nasm $(ASFLAGS) $<

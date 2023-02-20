@@ -1,3 +1,4 @@
+(Based on James Molloy).
 Package managment is handled at the kernel level.
 The shell is a dynamic language enviorment (Proper one, no terminal/shell buisness).
 Everything will use a universal text format (Something like HTML).
