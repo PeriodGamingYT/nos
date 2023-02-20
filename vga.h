@@ -3,6 +3,7 @@
 void print_char(char);
 void print_clear();
 void print(char *);
+void print_num(unsigned int);
 #define println(s) \
 	print( s ); \
 	print("\n")

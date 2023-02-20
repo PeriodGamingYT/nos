@@ -74,3 +74,32 @@ void print(char *string) {
 		print_char(string[i]);
 	}
 }
+
+void print_num(unsigned int num) {
+	int temp = 0;
+	print("0x");
+	char no_zeroes = 1;
+	for(int i = 28; i > 0; i -= 4) {
+		temp = (num >> i) & 0xf;
+		if(temp == 0 && no_zeroes != 0) {
+			continue;
+		}
+
+		if(temp >= 0xa) {
+			no_zeroes = 0;
+			print_char(temp - 0xa + 'a');
+			continue;
+		}
+
+		no_zeroes = 0;
+		print_char(temp + '0');
+	}
+
+	temp = num & 0xf;
+	if(temp >= 0xa) {
+		print_char(temp - 0xa + 'a');
+		return;
+	}
+
+	print_char(temp + '0');
+}
