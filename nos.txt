@@ -36,4 +36,4 @@ Filesystem looks like
 		sum
 			manifest (Configs can maybe go in here?)
 			out/
-				(stuff the whole system can use)
+				(stuff the whole system can read, but only the package can write)
