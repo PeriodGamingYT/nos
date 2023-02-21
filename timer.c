@@ -6,7 +6,7 @@
 unsigned int tick = 0;
 static void timer_callback(struct regs *arg_regs) {
 	tick++;
-	#ifdef COMMON_DEBUG
+	#ifdef COMMON_DEBUG_TIMER
 		print("tick ");
 		print_num(tick);
 		println("");
