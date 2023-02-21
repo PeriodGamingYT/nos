@@ -114,7 +114,9 @@ static void init_idt() {
 	idt_flush((unsigned int) &idt_entries_ptr);
 }
 
+extern isr_t int_handlers[];
 void init_tables() {
 	init_gdt();
 	init_idt();
+	memory_set(&int_handlers, 0, sizeof(isr_t) * 256);
 }

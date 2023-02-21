@@ -1,5 +1,6 @@
 #ifndef __COMMON_H
 #define __COMMON_H
+// #define COMMON_DEBUG
 void out_8(unsigned short port, unsigned char value);
 unsigned char in_8(unsigned short port);
 unsigned short in_16(unsigned short port);

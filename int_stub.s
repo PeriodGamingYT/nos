@@ -99,6 +99,7 @@ IRQ 15, 47
 [EXTERN irq_handler]
 irq_common_stub:
 	pusha
+	mov ax, ds
 	push eax
 	mov ax, 0x10
 	mov ds, ax

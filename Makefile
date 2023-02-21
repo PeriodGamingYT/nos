@@ -6,6 +6,8 @@ SOURCES= \
 	int_stub.o \
 	isr.o \
 	tables.o \
+	timer.o \
+	key.o \
 	main.o
 
 CFLAGS=-nostdlib -nostdinc -fno-builtin -fno-stack-protector -m32

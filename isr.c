@@ -18,9 +18,6 @@ void isr_handler(struct regs arg_regs) {
 }
 
 void irq_handler(struct regs arg_regs) {
-	print("irq int ");
-	print_num(arg_regs.int_num);
-	println("");
 	if(arg_regs.int_num >= 40) {
 		out_8(0xa0, 0x20);
 	}
