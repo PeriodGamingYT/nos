@@ -37,3 +37,9 @@ Filesystem looks like
 			manifest (Configs can maybe go in here?)
 			out/
 				(stuff the whole system can read, but only the package can write)
+
+processes
+	VM? (Use some kind of bytecode for programs, this would remove the
+	need for a userland, that is, if it's completely secure). Also cross
+	platform binaries wouldn't be needed. As this VM would be implemented
+	directly in the kernel. Thoughts?
