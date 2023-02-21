@@ -17,10 +17,13 @@ all: $(SOURCES) link
 clean:
 	-rm *.o kernel.bin
 
+qemu: kernel.bin
+	qemu-system-i386 -kernel kernel.bin
+
 link:
 	clear
 	ld $(LDFLAGS) -o kernel.bin $(SOURCES)
-	qemu-system-i386 -kernel kernel.bin
+	make qemu
 
 .s.o:
 	nasm $(ASFLAGS) $<
