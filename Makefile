@@ -19,7 +19,7 @@ clean:
 	-rm *.o kernel.bin
 
 qemu: kernel.bin
-	qemu-system-i386 -kernel kernel.bin
+	qemu-system-i386 -kernel kernel.bin -no-reboot -werror=stop -rerror=stop
 
 link:
 	clear

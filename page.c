@@ -84,7 +84,7 @@ void switch_page_directory(struct page_directory *new) {
 	asm volatile("mov %0, %%cr3" : : "r" (&new->table_physical));
 	unsigned int cr0;
 	asm volatile("mov %%cr0, %0" : "=r" (cr0));
-	cr0 |= 0x800000000;
+	cr0 |= 0x80000000;
 	asm volatile("mov %0, %%cr0" : : "r" (cr0));
 }
 

@@ -28,8 +28,8 @@ static unsigned int internal_allocate(
 	int align,
 	unsigned int *physical
 ) {
-	if(align == 1 && (placement_address & 0xfffff000)) {
-		placement_address &= 0xfffff000;
+	if(align == 1 && (placement_address & 0x00000fff)) {
+		placement_address &= 0x00000fff;
 		placement_address += 0x1000;
 	}
 
