@@ -20,3 +20,40 @@ void memory_set(void *dest, int value, int size) {
 	char *temp = dest;
 	while(size--) *temp++ = value;
 }
+
+extern unsigned int end;
+unsigned int placement_address = (unsigned int) &end;
+static unsigned int internal_allocate(
+	unsigned int size,
+	int align,
+	unsigned int *physical
+) {
+	if(align == 1 && (placement_address & 0xfffff000)) {
+		placement_address &= 0xfffff000;
+		placement_address += 0x1000;
+	}
+
+	if(physical) {
+		*physical = placement_address;
+	}
+
+	unsigned int temp = placement_address;
+	placement_address += size;
+	return temp;
+}
+
+unsigned int allocate_aligned(unsigned int size) {
+	return internal_allocate(size, 1, 0);
+}
+
+unsigned int allocate_physical(unsigned int size, unsigned int *physical) {
+	return internal_allocate(size, 0, physical);
+}
+
+unsigned int allocate_aligned_physical(unsigned int size, unsigned int *physical) {
+	return internal_allocate(size, 1, physical);
+}
+
+unsigned int allocate(unsigned int size) {
+	return internal_allocate(size, 0, 0);
+}

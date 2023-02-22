@@ -12,4 +12,12 @@ void out_8(unsigned short port, unsigned char value);
 unsigned char in_8(unsigned short port);
 unsigned short in_16(unsigned short port);
 void memory_set(void *, int, int);
+unsigned int allocate_aligned(unsigned int);
+unsigned int allocate_physical(unsigned int, unsigned int *);
+unsigned int allocate_aligned_physical(unsigned int, unsigned int *);
+unsigned int allocate(unsigned int);
+#define panic(x) \
+	println( x ); \
+	for(;;)
+
 #endif

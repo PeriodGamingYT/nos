@@ -8,6 +8,7 @@ SOURCES= \
 	tables.o \
 	timer.o \
 	key.o \
+	page.o \
 	main.o
 
 CFLAGS=-nostdlib -nostdinc -fno-builtin -fno-stack-protector -m32

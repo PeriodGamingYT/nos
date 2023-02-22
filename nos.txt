@@ -43,3 +43,58 @@ processes
 	need for a userland, that is, if it's completely secure). Also cross
 	platform binaries wouldn't be needed. As this VM would be implemented
 	directly in the kernel. Thoughts?
+
+bytecode
+	There are 256 n byte arrays the program has immediate access to, think registers.
+	n? Yes, the array can be resized to fit larger data types, but at the cost of having less "registers".
+	Consequentially, "registers" will be combined, be wary of this.
+	instructions (instruction (opcode): operands)
+		load (0x00): register, 4 byte value
+		push (0x01): register
+		pop (0x02): register
+		add (0x03): register, register
+		sub (0x04): register, register
+		mul (0x05): register, register
+		div (0x06): register, register		
+		jump (0x07): 4 byte number address
+		compare (0x08): register, register
+		set (0x09): register, n byte value
+		jump_equal(0x10): 4 byte number address
+		jump_zero(0x11): 4 byte number address
+		jump_a_larger(0x12): 4 byte number address
+		jump_carry(0x13): 4 byte number address
+		jump_overflow(0x14): 4 byte number address
+		stop(0x15): (none)
+		mode(0x16): 1 byte
+
+	notes about instruction set
+		jump_not_x can be implemented like this (equal in this example)
+			n - 2: compare
+			n - 1: jump_equal x
+			n: jump y
+			x: ...
+			y: ...
+
+		mode will resize registers to be n^2 bytes, as an example
+			0: set 0 255
+			1: set 1 255
+			2: mode 1
+			3: add 0 1
+
+			this won't work as expected, because there registers 1 and 0 are now combined together.
+			so in this mode register 0 is now 510, but register 1 is now 0. switching back to mode 
+			0 will make register 0 255 and register 1 255
+
+			this example, however, will work:
+			0: set 0 255
+			1: set 2 255
+			2: mode 1
+			3: add 0 1
+
+			even though this will work, it is discouraged, instead do this:
+			0: mode 1
+			1: set 0 255
+			2: set 1 255
+			3: add 0 1
+
+			this one functions the same as the above, but it is easier to read. 
