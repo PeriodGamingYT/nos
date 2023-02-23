@@ -12,6 +12,7 @@ SOURCES= \
 	paging.o \
 	ordered_array.o \
 	paging_stub.o \
+	vm.o \
 	main.o
 
 CFLAGS=-nostdlib -nostdinc -fno-builtin -fno-stack-protector -m32

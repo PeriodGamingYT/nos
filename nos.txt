@@ -34,9 +34,12 @@ Filesystem looks like
 
 	pkg
 		sum
-			manifest (Configs can maybe go in here?)
+			manifest (configs can maybe go in here)
 			out/
 				(stuff the whole system can read, but only the package can write)
+
+	dev
+		(files that are actually devices)
 
 processes
 	VM? (Use some kind of bytecode for programs, this would remove the
@@ -45,10 +48,10 @@ processes
 	directly in the kernel. Thoughts?
 
 bytecode
-	There are 256 n byte arrays the program has immediate access to, think registers.
+	There are 4096 n byte arrays the program has immediate access to, think registers.
 	n? Yes, the array can be resized to fit larger data types, but at the cost of having less "registers".
 	Consequentially, "registers" will be combined, be wary of this.
-	instructions (instruction (opcode): operands)
+	instructions (format is instruction (opcode): operands)
 		load (0): register, 4 byte value
 		push (1): register
 		pop (2): register
@@ -67,9 +70,11 @@ bytecode
 		stop(15): (none)
 		mode(16): 1 byte
 		ffi(17): 1 byte
+		set_reg(18): register, register
 
 	notes about instruction set
 		jump_not_x can be implemented like this (equal in this example)
+			conditional jump instructions depend on flags that came from compare
 			n - 2: compare
 			n - 1: jump_equal x
 			n: jump y
@@ -99,5 +104,17 @@ bytecode
 			3: add 0 1
 
 			this one functions the same as the above, but it is easier to read. 
-
-		conditional jump instructions depend on flags that came from compare
+		
+		ffi
+			ffi are basically system calls. their inputs will be stored in the first 16 bytes
+			in total there are 4 parameters, each being 4 bytes. an ffi function may provide an
+			output using the same 4 input parameters. in total there are 255 avalible ffi functions,
+			nos may not use all of them.
+			ffi table (format is name(number): output_0, ..., output_n : input_0, ..., input_n)
+				print(0): string_ptr : (none)
+				print_num(1): num : (none)
+				move_cursor(2): x, y : (none)
+				print_clear(3): (none) : (none)
+				malloc(4): ptr, size : ptr
+				free(5): ptr : (none)
+				get_key(6): (none) : key
