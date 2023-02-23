@@ -52,25 +52,21 @@ bytecode
 	n? Yes, the array can be resized to fit larger data types, but at the cost of having less "registers".
 	Consequentially, "registers" will be combined, be wary of this.
 	instructions (format is instruction (opcode): operands)
-		load (0): register, 4 byte value
-		push (1): register
-		pop (2): register
-		add (3): register, register
-		sub (4): register, register
-		mul (5): register, register
-		div (6): register, register		
-		jump (7): 4 byte number address
-		compare (8): register, register
-		set (9): register, n byte value
-		jump_equal(10): 4 byte number address
-		jump_zero(11): 4 byte number address
-		jump_a_larger(12): 4 byte number address
-		jump_carry(13): 4 byte number address
-		jump_overflow(14): 4 byte number address
-		stop(15): (none)
-		mode(16): 1 byte
-		ffi(17): 1 byte
-		set_reg(18): register, register
+		add (0): register, register
+		sub (1): register, register
+		mul (2): register, register
+		div (3): register, register		
+		jump (4): 4 byte number address
+		compare (5): register, register
+		set (6): register, n byte value
+		jump_equal(7): 4 byte number address
+		jump_zero_a(8): 4 byte number address
+		jump_zero_b(9): 4 byte number address
+		jump_a_larger(10): 4 byte number address
+		stop(11): (none)
+		mode(12): 1 byte
+		ffi(13): 1 byte
+		set_reg(14): register, register
 
 	notes about instruction set
 		jump_not_x can be implemented like this (equal in this example)
