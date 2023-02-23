@@ -8,7 +8,10 @@ SOURCES= \
 	tables.o \
 	timer.o \
 	key.o \
-	page.o \
+	kheap.o \
+	paging.o \
+	ordered_array.o \
+	paging_stub.o \
 	main.o
 
 CFLAGS=-nostdlib -nostdinc -fno-builtin -fno-stack-protector -m32
@@ -19,7 +22,7 @@ clean:
 	-rm *.o kernel.bin
 
 qemu: kernel.bin
-	qemu-system-i386 -kernel kernel.bin -no-reboot -werror=stop -rerror=stop
+	qemu-system-i386 -kernel kernel.bin -no-reboot 
 
 link:
 	clear

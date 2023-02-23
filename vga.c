@@ -105,3 +105,29 @@ void print_num(unsigned int num) {
 
 	print_char(temp + '0');
 }
+
+void print_dec(unsigned int num) {
+	if(num == 0) {
+		print_char('0');
+		return;
+	}
+
+	int acc = num;
+	char buffer[32];
+	int i = 0;
+	while(acc > 0) {
+		buffer[i] = '0' + acc % 10;
+		acc /= 10;
+		i++;
+	}
+
+	buffer[i] = 0;
+	char buffer_2[32];
+	buffer_2[i--] = 0;
+	int j = 0;
+	while(i >= 0) {
+		buffer_2[i--] = buffer[j++];
+	}
+
+	print(buffer_2);
+}

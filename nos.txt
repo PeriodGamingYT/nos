@@ -49,23 +49,24 @@ bytecode
 	n? Yes, the array can be resized to fit larger data types, but at the cost of having less "registers".
 	Consequentially, "registers" will be combined, be wary of this.
 	instructions (instruction (opcode): operands)
-		load (0x00): register, 4 byte value
-		push (0x01): register
-		pop (0x02): register
-		add (0x03): register, register
-		sub (0x04): register, register
-		mul (0x05): register, register
-		div (0x06): register, register		
-		jump (0x07): 4 byte number address
-		compare (0x08): register, register
-		set (0x09): register, n byte value
-		jump_equal(0x10): 4 byte number address
-		jump_zero(0x11): 4 byte number address
-		jump_a_larger(0x12): 4 byte number address
-		jump_carry(0x13): 4 byte number address
-		jump_overflow(0x14): 4 byte number address
-		stop(0x15): (none)
-		mode(0x16): 1 byte
+		load (0): register, 4 byte value
+		push (1): register
+		pop (2): register
+		add (3): register, register
+		sub (4): register, register
+		mul (5): register, register
+		div (6): register, register		
+		jump (7): 4 byte number address
+		compare (8): register, register
+		set (9): register, n byte value
+		jump_equal(10): 4 byte number address
+		jump_zero(11): 4 byte number address
+		jump_a_larger(12): 4 byte number address
+		jump_carry(13): 4 byte number address
+		jump_overflow(14): 4 byte number address
+		stop(15): (none)
+		mode(16): 1 byte
+		ffi(17): 1 byte
 
 	notes about instruction set
 		jump_not_x can be implemented like this (equal in this example)
@@ -98,3 +99,5 @@ bytecode
 			3: add 0 1
 
 			this one functions the same as the above, but it is easier to read. 
+
+		conditional jump instructions depend on flags that came from compare

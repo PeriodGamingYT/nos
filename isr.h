@@ -11,4 +11,5 @@ struct regs {
 
 typedef void (*isr_t)(struct regs *);
 void register_int_handler(unsigned char, isr_t);
+typedef struct regs registers_t;
 #endif
