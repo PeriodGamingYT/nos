@@ -5,13 +5,14 @@
 #include "vm.h"
 #include "paging.h"
 
+#define KERNEL_CODE_MAX 72
 void main(struct multiboot *multiboot_ptr) {
 	init_tables();
 	print_clear();
 	asm volatile("sti");
 	timer_install(50);
 	keyboard_install();
-	initialise_paging();
+	// initialise_paging();
 	unsigned char kernel_code[] = {
 		12, 1,
 		6, 0, 'n',
@@ -30,8 +31,8 @@ void main(struct multiboot *multiboot_ptr) {
 		11
 	};
 
-	// 77 is how many instructions there are in the kernel vm
-	struct vm kernel_vm = vm_create(kernel_code, 77);
-	vm_add(&kernel_vm, 1);
+	struct vm kernel_vm = vm_create(kernel_code, KERNEL_CODE_MAX);
+	vm_add(&kernel_vm, 15);
 	vm_install();
+	for(;;);
 }

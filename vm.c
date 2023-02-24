@@ -26,6 +26,7 @@ int vm_add(struct vm *arg_vm, int step) {
 	}
 
 	if(i >= VM_MAX) {
+	
 		// expansion of macro is:
 		// print("vm  "); println("can't have any more vms"); return
 		// the -1 finishes the return. VM_PANIC is usually used in
@@ -50,6 +51,14 @@ static int get_bytes(
 	}
 
 	*index += length;
+	#ifdef COMMON_DEBUG_VM
+		print("get_bytes index");
+		print_dec(*index);
+		print(" result ");
+		print_dec(result);
+		println("");
+	#endif
+	
 	return result;
 }
 
@@ -277,16 +286,58 @@ instruction_t instructions[VM_INSTRUCTION_MAX] = {
 static void vm_parse(
 	struct vm *arg_vm
 ) {
-	if(arg_vm->stop) {
+	if(arg_vm->code_index + 1 >= arg_vm->code_length) {
+		#ifdef COMMON_DEBUG_VM
+			println("vm code index too big");
+		#endif
+		
+		arg_vm->stop = 1;
+	}
+	
+	if(arg_vm->stop != 0) {
+		#ifdef COMMON_DEBUG_VM
+			println("vm stopped");
+		#endif
+		
 		return;
 	}
 
 	int index = arg_vm->code[arg_vm->code_index];
+	#ifdef COMMON_DEBUG_VM
+		print("vm code index ");
+		print_num(index);
+		println("");
+	#endif
+	
 	arg_vm->code_index++;
 	instructions[index](arg_vm);
 }
 
+#ifdef COMMON_DEBUG_VM
+	#define VM_PRINT(x) \
+		print( #x ); \
+		print(" "); \
+		print_num(arg_vm. x ); \
+		print(" "); \
+		print_dec(arg_vm. x ); \
+		println("")
+	
+	void vm_print(struct vm arg_vm) {
+		println("vm_print");
+		VM_PRINT(mode);
+		VM_PRINT(code_length);
+		VM_PRINT(code_index);
+		VM_PRINT(flags);
+		VM_PRINT(stop);
+		VM_PRINT(step);
+	}
+#endif
+
 void vm_step(struct vm *arg_vm, int steps) {
+	#ifdef COMMON_DEBUG_VM
+		vm_print(*arg_vm);
+	#endif
+	
 	for(int i = 0; i < steps; i++) {
 		vm_parse(arg_vm);
 	}
@@ -309,14 +360,36 @@ struct vm vm_create(unsigned char *code, int length) {
 }
 
 int vm_index = 0;
-static void vm_round_robin() {
-	vm_step(vms[vm_index], vms[vm_index]->step);
+void vm_round_robin() {
+	#ifdef COMMON_DEBUG_VM
+		print_clear();
+		println("vm_round_robin");
+		print("index ");
+		print_num(vm_index);
+		println("");
+		print("max ");
+		print_num(vm_max);
+		println("");
+	#endif
+	
+	if(
+		vms[vm_index] != 0 && 
+		vms[vm_index]->step > 0
+	) {
+		vm_step(vms[vm_index], vms[vm_index]->step);
+	}
+	
 	vm_index++;
 	if(vm_index >= vm_max) {
 		vm_index = 0;
 	}
 }
 
+int vm_installed = 0;
 void vm_install() {
-	 timer_handler_set(vm_round_robin);
+	vm_installed = 1;
+}
+
+int is_vm_installed() {
+	return vm_installed;
 }

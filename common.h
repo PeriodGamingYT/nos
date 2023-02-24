@@ -3,9 +3,11 @@
 // #define COMMON_DEBUG
 // #define COMMON_DEBUG_TIMER
 // #define COMMON_DEBUG_KEY
+// #define COMMON_DEBUG_VM
 #ifdef COMMON_DEBUG
 	#define COMMON_DEBUG_TIMER
 	#define COMMON_DEBUG_KEY
+	#define COMMON_DEBUG_VM
 #endif
 
 typedef unsigned char u8int;

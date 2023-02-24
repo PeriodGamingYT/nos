@@ -32,4 +32,6 @@ int vm_add(struct vm *, int);
 struct vm vm_create(unsigned char *, int);
 void vm_step(struct vm *, int);
 void vm_install();
+int is_vm_installed();
+void vm_round_robin();
 #endif

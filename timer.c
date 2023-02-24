@@ -2,13 +2,13 @@
 #include "isr.h"
 #include "common.h"
 #include "vga.h"
+#include "vm.h"
 
 unsigned int tick = 0;
-void (*handler)();
 static void timer_callback(struct regs *arg_regs) {
 	tick++;
-	if(handler != 0) {
-		handler();
+	if(is_vm_installed()) {
+		vm_round_robin();
 	}
 	
 	#ifdef COMMON_DEBUG_TIMER
@@ -16,10 +16,6 @@ static void timer_callback(struct regs *arg_regs) {
 		print_num(tick);
 		println("");
 	#endif
-}
-
-void timer_handler_set(void (*arg_handler)()) {
-	handler = arg_handler;
 }
 
 void timer_delay(unsigned int num_ticks) {
