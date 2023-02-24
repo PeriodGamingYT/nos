@@ -5,7 +5,7 @@
 #include "vm.h"
 #include "paging.h"
 
-#define KERNEL_CODE_MAX 72
+#define KERNEL_CODE_MAX 75
 void main(struct multiboot *multiboot_ptr) {
 	init_tables();
 	print_clear();
@@ -27,12 +27,13 @@ void main(struct multiboot *multiboot_ptr) {
 		6, 9, 'e',
 		6, 10, 'd',
 		6, 11, '\n',
+		6, 12, 0,
 		13, 0,
 		11
 	};
 
 	struct vm kernel_vm = vm_create(kernel_code, KERNEL_CODE_MAX);
-	vm_add(&kernel_vm, 15);
+	vm_add(&kernel_vm, 1);
 	vm_install();
 	for(;;);
 }
