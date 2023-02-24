@@ -2,7 +2,7 @@
 #define __COMMON_H
 // #define COMMON_DEBUG
 // #define COMMON_DEBUG_TIMER
-#define COMMON_DEBUG_KEY
+// #define COMMON_DEBUG_KEY
 #ifdef COMMON_DEBUG
 	#define COMMON_DEBUG_TIMER
 	#define COMMON_DEBUG_KEY

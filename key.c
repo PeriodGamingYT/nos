@@ -44,7 +44,7 @@ unsigned short key_layout[128] = {
     KEY_UNDEFINED,	/* All other keys are undefined */
 };
 
-unsigned char keys[32] = { 0 };
+unsigned char keys[33] = { 0 };
 static unsigned char turn_off_bit(unsigned char n, int k) {
 	return (n & ~(1 << (k - 1)));
 }
@@ -134,6 +134,20 @@ static void keyboard_callback(struct regs *arg_regs) {
 	}
 	
 	keys[(int)(scancode / 8)] |= 1 << (scancode % 8);
+}
+
+unsigned short key_get_first() {
+	for(int i = 0; i < KEYS_MAX; i++) {
+		if(keys[(int)(i / 8)]) {
+			continue;
+		}
+		
+		if(keys[(int)(i / 8)] & (1 << (i % 8))) {
+			return i;
+		}
+	}
+
+	return KEY_UNDEFINED;
 }
 
 void keyboard_install() {

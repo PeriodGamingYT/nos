@@ -1,6 +1,9 @@
 #include "vm.h"
 #include "kheap.h"
 #include "common.h"
+#include "vga.h"
+#include "key.h"
+#include "timer.h"
 
 struct vm *vms[VM_MAX];
 void vm_remove(int index) {
@@ -15,17 +18,24 @@ void vm_remove(int index) {
 	vms[index] = 0;
 }
 
-int vm_add(struct vm *arg_vm) {
+int vm_max = 0;
+int vm_add(struct vm *arg_vm, int step) {
 	int i = 0;
 	while(vms[i] != 0 && i < VM_MAX) {
 		i++;
 	}
 
 	if(i >= VM_MAX) {
-		VM_PANIC("can't have any more vms");
+		// expansion of macro is:
+		// print("vm  "); println("can't have any more vms"); return
+		// the -1 finishes the return. VM_PANIC is usually used in
+		// instruction_t callbacks.
+		VM_PANIC("can't have any more vms") - 1;
 	}
 
+	arg_vm->step = step;
 	vms[i] = arg_vm;
+	vm_max = i;
 	return i;
 }
 
@@ -170,11 +180,65 @@ static void mode(struct vm *arg_vm) {
 	arg_vm->mode = mode;
 }
 
-typedef void (*ffi_t)(unsigned char *);
-ffi_t vm_ffi[VM_FFI_MAX] = { 0 };
+static void ffi_print(struct vm *arg_vm) {
+	for(
+		int i = 0; 
+		arg_vm->data[i] != 0 &&
+		i < arg_vm->code_length;
+		i++
+	) {
+		print_char(arg_vm->data[i]);
+	}
+}
+
+static void ffi_print_num(struct vm *arg_vm) {
+	int zero = 0;
+	int num = get_bytes(arg_vm->data, &zero, arg_vm->mode);
+	print_num(num);
+}
+
+static void ffi_move_cursor(struct vm *arg_vm) {
+	int zero = 0;
+	int x = get_bytes(arg_vm->data, &zero, arg_vm->mode);
+	int y = get_bytes(arg_vm->data, &zero, arg_vm->mode);
+	move_cursor(x, y);
+}
+
+static void ffi_print_clear(struct vm *arg_vm) {
+	print_clear();
+}
+
+// Insecure!
+static void ffi_allocate(struct vm *arg_vm) {
+	int zero = 0;
+	int num = get_bytes(arg_vm->data, &zero, arg_vm->mode);
+	unsigned char *ptr = (unsigned char *) kmalloc(num);
+	set_vm_reg(0, (unsigned int) &ptr, arg_vm);
+}
+
+static void ffi_free(struct vm *arg_vm) {
+	int zero = 0;
+	int num = get_bytes(arg_vm->data, &zero, arg_vm->mode);
+	kfree((int *) num);
+}
+
+static void ffi_get_key(struct vm *arg_vm) {
+	set_vm_reg(0, key_get_first(), arg_vm);
+}
+
+instruction_t vm_ffi[VM_FFI_MAX] = {
+	ffi_print,
+	ffi_print_num,
+	ffi_move_cursor,
+	ffi_print_clear,
+	ffi_allocate,
+	ffi_free,
+	ffi_get_key
+};
+ 
 static void ffi(struct vm *arg_vm) {
 	int ffi_num = VM_GET_BYTES(1);
-	vm_ffi[ffi_num](arg_vm->data);
+	vm_ffi[ffi_num](arg_vm);
 }
 
 static void set_reg(struct vm *arg_vm) {
@@ -192,30 +256,30 @@ static void set_reg(struct vm *arg_vm) {
 	);
 }
 
+instruction_t instructions[VM_INSTRUCTION_MAX] = {
+	add,
+	sub,
+	mul,
+	div,
+	jump,
+	compare,
+	set,
+	jump_equal,
+	jump_zero_a,
+	jump_zero_b,
+	jump_a_larger,
+	stop,
+	mode,
+	ffi,
+	set_reg
+};
+
 static void vm_parse(
 	struct vm *arg_vm
 ) {
 	if(arg_vm->stop) {
 		return;
 	}
-	
-	instruction_t instructions[VM_INSTRUCTION_MAX] = {
-		add,
-		sub,
-		mul,
-		div,
-		jump,
-		compare,
-		set,
-		jump_equal,
-		jump_zero_a,
-		jump_zero_b,
-		jump_a_larger,
-		stop,
-		mode,
-		ffi,
-		set_reg
-	};
 
 	int index = arg_vm->code[arg_vm->code_index];
 	arg_vm->code_index++;
@@ -240,5 +304,19 @@ struct vm vm_create(unsigned char *code, int length) {
 	result.code_index = 0;
 	result.flags = 0;
 	result.stop = 0;
+	result.step = 0;
 	return result;
+}
+
+int vm_index = 0;
+static void vm_round_robin() {
+	vm_step(vms[vm_index], vms[vm_index]->step);
+	vm_index++;
+	if(vm_index >= vm_max) {
+		vm_index = 0;
+	}
+}
+
+void vm_install() {
+	 timer_handler_set(vm_round_robin);
 }

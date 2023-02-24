@@ -24,10 +24,12 @@ struct vm {
 	int code_index;
 	int flags;
 	int stop;
+	int step;
 };
 
 void vm_remove(int);
-int vm_add(struct vm *);
+int vm_add(struct vm *, int);
 struct vm vm_create(unsigned char *, int);
 void vm_step(struct vm *, int);
+void vm_install();
 #endif

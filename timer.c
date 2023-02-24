@@ -4,13 +4,22 @@
 #include "vga.h"
 
 unsigned int tick = 0;
+void (*handler)();
 static void timer_callback(struct regs *arg_regs) {
 	tick++;
+	if(handler != 0) {
+		handler();
+	}
+	
 	#ifdef COMMON_DEBUG_TIMER
 		print("tick ");
 		print_num(tick);
 		println("");
 	#endif
+}
+
+void timer_handler_set(void (*arg_handler)()) {
+	handler = arg_handler;
 }
 
 void timer_delay(unsigned int num_ticks) {

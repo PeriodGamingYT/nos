@@ -111,6 +111,6 @@ bytecode
 				print_num(1): num : (none)
 				move_cursor(2): x, y : (none)
 				print_clear(3): (none) : (none)
-				malloc(4): ptr, size : ptr
+				allocate(4): ptr, size : ptr
 				free(5): ptr : (none)
 				get_key(6): (none) : key

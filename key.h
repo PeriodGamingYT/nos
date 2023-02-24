@@ -13,22 +13,24 @@
 // It might cause trouble for you if you are implementing something like 
 // UTF-8 (Maybe in a fork). But here I am only targeting ASCII. 
 // So this is why it is this way.
-#define KEY_ALT 1000
-#define KEY_CAPS 1001
-#define KEY_NUM_LOCK 1002
-#define KEY_SCROLL_LOCK 1003
-#define KEY_HOME 1004
-#define KEY_UP 1005
-#define KEY_PAGE_UP 1006
-#define KEY_LEFT 1007
-#define KEY_RIGHT 1008
-#define KEY_END 1009
-#define KEY_DOWN 1010
-#define KEY_PAGE_DOWN 1011
-#define KEY_INSERT 1012
-#define KEY_DELETE 1013
-#define KEY_F11 1014
-#define KEY_F12 1015
-#define KEY_UNDEFINED 1016
+#define KEY_ALT 129
+#define KEY_CAPS 130
+#define KEY_NUM_LOCK 131
+#define KEY_SCROLL_LOCK 132
+#define KEY_HOME 133
+#define KEY_UP 134
+#define KEY_PAGE_UP 135
+#define KEY_LEFT 136
+#define KEY_RIGHT 137
+#define KEY_END 138
+#define KEY_DOWN 139
+#define KEY_PAGE_DOWN 140
+#define KEY_INSERT 141
+#define KEY_DELETE 142
+#define KEY_F11 143
+#define KEY_F12 144
+#define KEY_UNDEFINED 145
+#define KEYS_MAX 146
 void keyboard_install();
+unsigned short key_get_first();
 #endif

@@ -4,12 +4,31 @@
 static int cursor_x = 0;
 static int cursor_y = 0;
 static unsigned short *video_memory = (unsigned short *) 0xb8000;
-static void move_cursor() {
+static void internal_move_cursor() {
 	unsigned short location = cursor_y * 80 + cursor_x;
 	out_8(0x3d4, 14);
 	out_8(0x3d5, location >> 8);
 	out_8(0x3d4, 15);
 	out_8(0x3d5, location);
+}
+
+static void wrap_cursor() {
+	if(cursor_x >= 80) {
+		cursor_x = 0;
+		cursor_y++;
+	}
+
+	if(cursor_y >= 25) {
+		cursor_y = 0;
+		print_clear();
+	}
+}
+
+void move_cursor(int x, int y) {
+	cursor_x = x;
+	cursor_y = y;
+	wrap_cursor();
+	internal_move_cursor();
 }
 
 void print_clear() {
@@ -21,7 +40,7 @@ void print_clear() {
 
 	cursor_x = 0;
 	cursor_y = 0;
-	move_cursor();
+	internal_move_cursor();
 }
 
 void print_char(char arg_char) {
@@ -58,17 +77,8 @@ void print_char(char arg_char) {
 			break;
 	}
 
-	if(cursor_x >= 80) {
-		cursor_x = 0;
-		cursor_y++;
-	}
-
-	if(cursor_y >= 25) {
-		cursor_y = 0;
-		print_clear();
-	}
-
-	move_cursor();
+	wrap_cursor();
+	internal_move_cursor();
 }
 
 void print(char *string) {
