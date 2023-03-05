@@ -20,7 +20,7 @@ LDFLAGS=-Tlink.ld -m elf_i386
 ASFLAGS=-felf
 all: $(SOURCES) link
 clean:
-	-rm *.o kernel.bin
+	rm -rf *.o kernel.bin iso
 
 qemu: kernel.bin
 	qemu-system-i386 -kernel kernel.bin -no-reboot
@@ -28,6 +28,13 @@ qemu: kernel.bin
 link:
 	clear
 	ld $(LDFLAGS) -o kernel.bin $(SOURCES)
+	mkdir iso
+	mkdir iso/boot
+	mkdir iso/boot/grub
+	cp grub.cfg iso/boot/grub
+	cp kernel.bin iso/boot
+	grub-mkrescue --output=nos.iso iso
+	rm -rf iso
 	make qemu
 
 .s.o:
