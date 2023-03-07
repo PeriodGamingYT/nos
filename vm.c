@@ -265,6 +265,53 @@ static void set_reg(struct vm *arg_vm) {
 	);
 }
 
+static void push(struct vm *arg_vm) {
+	int value = get_bytes(
+		arg_vm->data,
+		&arg_vm->stack_index,
+		arg_vm->mode
+	);
+
+	set_vm_reg(
+		arg_vm->stack_index,
+		value,
+		arg_vm
+	);
+
+	arg_vm->stack_index++;
+}
+
+static void push_reg(struct vm *arg_vm) {
+	int inst_reg = VM_GET_BYTES(1);
+	set_vm_reg(
+		arg_vm->stack_index,
+		get_bytes(
+			arg_vm->data,
+			&inst_reg,
+			arg_vm->mode
+		),
+
+		arg_vm
+	);
+
+	arg_vm->stack_index++;
+}
+
+static void pop(struct vm *arg_vm) {
+	int inst_reg = VM_GET_BYTES(1);
+	arg_vm->stack_index--;
+	set_vm_reg(
+		inst_reg,
+		get_bytes(
+			arg_vm->data,
+			&arg_vm->stack_index,
+			arg_vm->mode
+		),
+
+		arg_vm
+	);
+}
+
 instruction_t instructions[VM_INSTRUCTION_MAX] = {
 	add,
 	sub,
@@ -280,7 +327,10 @@ instruction_t instructions[VM_INSTRUCTION_MAX] = {
 	stop,
 	mode,
 	ffi,
-	set_reg
+	set_reg,
+	push,
+	push_reg,
+	pop
 };
 
 static void vm_parse(
@@ -356,6 +406,7 @@ struct vm vm_create(unsigned char *code, int length) {
 	result.flags = 0;
 	result.stop = 0;
 	result.step = 0;
+	result.stack_index = 0;
 	return result;
 }
 

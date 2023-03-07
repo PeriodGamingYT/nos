@@ -67,6 +67,9 @@ bytecode
 		mode(12): 1 byte
 		ffi(13): 1 byte
 		set_reg(14): register, register
+		push(15): n byte value
+		push_reg(16): register
+		pop(17): register 
 
 	notes about instruction set
 		jump_not_x can be implemented like this (equal in this example)

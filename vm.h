@@ -2,7 +2,7 @@
 #define __VM_H
 #define VM_DATA_MAX 4096
 #define VM_MAX 256
-#define VM_INSTRUCTION_MAX 15
+#define VM_INSTRUCTION_MAX 18
 #define VM_FFI_MAX 256
 #define VM_GET_BYTES(x) \
 	get_bytes(arg_vm->code, &arg_vm->code_index, x )
@@ -25,6 +25,7 @@ struct vm {
 	int flags;
 	int stop;
 	int step;
+	int stack_index;
 };
 
 void vm_remove(int);
