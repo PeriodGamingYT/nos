@@ -247,6 +247,13 @@ instruction_t vm_ffi[VM_FFI_MAX] = {
  
 static void ffi(struct vm *arg_vm) {
 	int ffi_num = VM_GET_BYTES(1);
+	if(
+		ffi_num < 0 ||
+		ffi_num > VM_FFI_MAX
+	) {
+		VM_PANIC("Tried to call outside of vm");
+	}
+	
 	vm_ffi[ffi_num](arg_vm);
 }
 
