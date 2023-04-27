@@ -14,6 +14,15 @@ multiboot:
 	dd MULTIBOOT_HEADER_MAGIC
 	dd MULTIBOOT_HEADER_FLAGS
 	dd MULTIBOOT_CHECKSUM
+	dd 0
+	dd 0
+	dd 0
+	dd 0
+	dd 0
+	dd 0
+	dd 1024
+	dd 768
+	dd 32	
 	dd multiboot
 	dd code
 	dd bss
