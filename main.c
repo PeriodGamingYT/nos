@@ -1,3 +1,4 @@
+#include "multiboot.h"
 #include "vga.h"
 #include "tables.h"
 #include "key.h"
@@ -12,7 +13,6 @@ void main(struct multiboot *multiboot_ptr) {
 	asm volatile("sti");
 	timer_install(50);
 	keyboard_install();
-	// initialise_paging();
 	unsigned char kernel_code[] = {
 		12, 1,
 		6, 0, 'n',

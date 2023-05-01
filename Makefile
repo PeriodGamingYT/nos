@@ -23,7 +23,7 @@ clean:
 	rm -rf *.o kernel.bin iso
 
 qemu: kernel.bin
-	qemu-system-i386 -kernel kernel.bin -no-reboot
+	qemu-system-i386 nos.iso -no-reboot
 
 link:
 	clear
